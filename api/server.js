@@ -6,12 +6,21 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import connectDB from './config/db.js';
+import { errorHandler } from './middleware/errorMiddleware';
 
 // CONNECT TO DATABASE
 connectDB();
 
 // INITIALIZE EXPRESS APP
 const app = express();
+
+// MIDDLEWARE
+app.use(express.json());
+
+// ROUTES
+
+// GLOBAL ERROR HANDLER
+app.use(errorHandler);
 
 // START SERVER
 const PORT = process.env.PORT || 5000;

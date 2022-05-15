@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import Joi from 'joi';
 
 const { Schema } = mongoose;
 
@@ -46,19 +45,10 @@ userSchema.methods.createToken = function () {
   });
 };
 
-// VALIDATION
-function validateUser(user) {
-  const { name, email, password } = user;
+userSchema.methods.comparePassword = async function (inputPassword) {
+  const isMatch = await bcrypt.compare(inputPassword, this.password);
 
-  const schema = Joi.object({
-    name: Joi.string().min(3).max(50).required(),
-    email: Joi.string().min(5).max(255).email().required(),
-    password: Joi.string().min(6).required(),
-  });
+  return isMatch;
+};
 
-  return schema.validate({ name, email, password });
-}
-
-const User = mongoose.model('User', userSchema);
-
-export { User, validateUser };
+export default mongoose.model('User', userSchema);
